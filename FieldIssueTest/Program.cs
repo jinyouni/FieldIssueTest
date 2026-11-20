@@ -190,15 +190,33 @@ app.MapPost("/api/issues/analyze", async (HttpRequest request, IConfiguration co
     var client = httpClientFactory.CreateClient("GeminiClient");
     var apiUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={apiKey}";
 
-    var jsonContent = new StringContent(JsonSerializer.Serialize(requestPayload), Encoding.UTF8, "application/json");
+    var jsonPayload = JsonSerializer.Serialize(requestPayload);
 
     try
     {
-        var response = await client.PostAsync(apiUrl, jsonContent);
-        var responseBody = await response.Content.ReadAsStringAsync();
+        // 503/429 자동 재시도 (최대 3회, 지수 백오프)
+        HttpResponseMessage response = null!;
+        string responseBody = "";
+        const int maxRetries = 3;
 
-        if (!response.IsSuccessStatusCode)
+        for (int attempt = 1; attempt <= maxRetries; attempt++)
         {
+            var jsonContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            response = await client.PostAsync(apiUrl, jsonContent);
+            responseBody = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+                break;
+
+            // 503 (과부하) 또는 429 (Rate Limit) → 재시도
+            if ((response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable ||
+                 response.StatusCode == System.Net.HttpStatusCode.TooManyRequests) &&
+                attempt < maxRetries)
+            {
+                await Task.Delay(attempt * 3000); // 3초, 6초 대기
+                continue;
+            }
+
             return Results.Json(new
             {
                 error = "Google Gemini API 호출 실패",
