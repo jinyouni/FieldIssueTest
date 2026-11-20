@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>스마트 현장 설비 이슈 대응 시스템</title>
+  <title>스마트 설비 보전 AI 어시스턴트 (Gemini 2.5 Flash)</title>
   <style>
     :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --primary-light: #60a5fa;
-      --accent: #f59e0b;
-      --danger: #ef4444;
+      --bg: #0b1320;
+      --card-bg: #132238;
+      --card-border: #1e3a5f;
+      --teal-primary: #0ea5e9;
+      --teal-accent: #14b8a6;
+      --teal-glow: rgba(20, 184, 166, 0.35);
+      --danger: #f43f5e;
+      --warning: #f59e0b;
       --success: #10b981;
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --card-border: #334155;
-      --text: #f8fafc;
+      --text-main: #f1f5f9;
       --text-muted: #94a3b8;
     }
 
@@ -28,8 +28,8 @@
     }
 
     body {
-      background-color: var(--bg);
-      color: var(--text);
+      background: radial-gradient(circle at top, #132238 0%, #0b1320 100%);
+      color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -39,172 +39,133 @@
 
     .container {
       width: 100%;
-      max-width: 540px;
+      max-width: 500px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
-    /* Header */
+    /* Top Bar */
     header {
-      background: linear-gradient(135deg, #1e293b, #0f172a);
+      background: rgba(19, 34, 56, 0.85);
+      backdrop-filter: blur(8px);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 16px;
+      border-radius: 14px;
+      padding: 14px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
 
-    .header-title {
+    .brand {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
     }
 
-    .header-title h1 {
-      font-size: 1.15rem;
+    .brand h1 {
+      font-size: 1.08rem;
       font-weight: 700;
       color: #fff;
       display: flex;
       align-items: center;
-      gap: 8px;
-    }
-
-    .header-title span {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    .badge-status {
-      display: inline-flex;
-      align-items: center;
       gap: 6px;
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
+    }
+
+    .brand span {
+      font-size: 0.72rem;
+      color: var(--teal-accent);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-model {
+      background: rgba(20, 184, 166, 0.15);
+      border: 1px solid rgba(20, 184, 166, 0.4);
+      color: #2dd4bf;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 0.72rem;
       font-weight: 600;
     }
 
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      background-color: #34d399;
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.2); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
-    /* Cards */
+    /* Section Cards */
     .card {
-      background-color: var(--card-bg);
+      background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 16px;
+      border-radius: 14px;
+      padding: 15px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      gap: 10px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
     }
 
-    .card-title {
-      font-size: 0.92rem;
-      font-weight: 600;
-      color: var(--text-muted);
+    .card-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-    }
-
-    /* Quick Scenario Presets */
-    .preset-container {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
-
-    .preset-btn {
-      background: #334155;
+      align-items: center;
+      font-size: 0.86rem;
+      font-weight: 600;
       color: #cbd5e1;
-      border: 1px solid #475569;
-      border-radius: 20px;
-      padding: 6px 12px;
-      font-size: 0.78rem;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: all 0.2s;
     }
 
-    .preset-btn:hover, .preset-btn:active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary-light);
+    .file-size-tag {
+      font-size: 0.72rem;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: #1e3a5f;
+      color: var(--teal-accent);
     }
 
-    /* Camera Section */
-    .camera-box {
-      border: 2px dashed #475569;
-      border-radius: 12px;
+    /* Photo Upload Area */
+    .photo-area {
+      border: 2px dashed #22456e;
+      border-radius: 10px;
       padding: 16px;
       text-align: center;
       cursor: pointer;
-      background-color: rgba(15, 23, 42, 0.4);
-      transition: border-color 0.2s, background-color 0.2s;
-      position: relative;
+      background: rgba(11, 19, 32, 0.5);
+      transition: all 0.2s;
     }
 
-    .camera-box:active, .camera-box.dragover {
-      border-color: var(--primary-light);
-      background-color: rgba(37, 99, 235, 0.1);
+    .photo-area:active {
+      border-color: var(--teal-accent);
+      background: rgba(20, 184, 166, 0.1);
     }
 
-    #photoInput {
+    #imageInput {
       display: none;
     }
 
-    .camera-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .camera-icon {
+    .photo-icon {
       font-size: 1.8rem;
+      margin-bottom: 4px;
     }
 
-    .camera-text {
+    .photo-title {
       font-size: 0.85rem;
-      color: #cbd5e1;
-      font-weight: 500;
+      color: #e2e8f0;
+      font-weight: 600;
     }
 
-    .camera-subtext {
+    .photo-desc {
       font-size: 0.72rem;
       color: var(--text-muted);
+      margin-top: 2px;
     }
 
-    .preview-container {
+    .preview-box {
       display: none;
       position: relative;
-      margin-top: 8px;
       border-radius: 10px;
       overflow: hidden;
       max-height: 180px;
       border: 1px solid var(--card-border);
     }
 
-    .preview-container img {
+    .preview-box img {
       width: 100%;
       height: 180px;
       object-fit: cover;
@@ -215,7 +176,7 @@
       position: absolute;
       top: 8px;
       right: 8px;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.75);
       color: #fff;
       border: none;
       border-radius: 50%;
@@ -223,151 +184,97 @@
       height: 28px;
       cursor: pointer;
       font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
-    /* PTT Section */
-    .ptt-wrapper {
+    /* Audio Recording Area (MediaRecorder API) */
+    .audio-control-box {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 12px;
-      padding: 8px 0;
+      padding: 10px 0;
     }
 
-    .ptt-btn {
-      width: 108px;
-      height: 108px;
+    .btn-rec-toggle {
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      border: 4px solid #3b82f6;
-      box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      border: 3px solid #38bdf8;
       color: #fff;
-      user-select: none;
-      transition: all 0.15s ease-out;
-      outline: none;
-    }
-
-    .ptt-btn:active, .ptt-btn.recording {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      border-color: #f87171;
-      transform: scale(1.06);
-      box-shadow: 0 0 35px rgba(239, 68, 68, 0.7);
-    }
-
-    .ptt-btn-icon {
-      font-size: 2.2rem;
-    }
-
-    .ptt-btn-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      margin-top: 4px;
-      letter-spacing: -0.3px;
-    }
-
-    .ptt-status-text {
-      font-size: 0.84rem;
-      color: var(--text-muted);
-      min-height: 20px;
-      text-align: center;
-    }
-
-    .ptt-status-text.active {
-      color: #f87171;
-      font-weight: 600;
-      animation: pulse 1s infinite;
-    }
-
-    /* Text Display / Input Area */
-    .voice-text-box {
-      width: 100%;
-      background-color: #0f172a;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 12px;
-      color: #f1f5f9;
-      font-size: 0.95rem;
-      resize: vertical;
-      min-height: 85px;
-      line-height: 1.5;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .voice-text-box:focus {
-      border-color: var(--primary);
-    }
-
-    .ptt-mode-toggle {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    .btn-toggle-rec {
-      background: #334155;
-      border: 1px solid #475569;
-      color: #cbd5e1;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-
-    .btn-toggle-rec.recording {
-      background: var(--danger);
-      color: white;
-      border-color: #f87171;
-    }
-
-    /* Action Button */
-    .btn-submit {
-      width: 100%;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      color: white;
-      border: none;
-      border-radius: 14px;
-      padding: 16px;
-      font-size: 1.05rem;
-      font-weight: 700;
-      cursor: pointer;
+      font-size: 1.8rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+      outline: none;
       transition: all 0.2s;
     }
 
-    .btn-submit:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+    .btn-rec-toggle.recording {
+      background: linear-gradient(135deg, #f43f5e, #e11d48);
+      border-color: #fb7185;
+      box-shadow: 0 0 25px rgba(244, 63, 94, 0.7);
+      animation: pulse 1.2s infinite;
     }
 
-    .btn-submit:disabled {
-      background: #475569;
-      color: #94a3b8;
-      cursor: not-allowed;
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    .rec-status-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+      min-height: 18px;
+    }
+
+    .audio-playback {
+      width: 100%;
+      height: 38px;
+      display: none;
+      border-radius: 8px;
+      margin-top: 6px;
+    }
+
+    /* Submit Button */
+    .btn-analyze {
+      background: linear-gradient(135deg, #0ea5e9, #14b8a6);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(20, 184, 166, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-analyze:active {
+      transform: translateY(2px);
+    }
+
+    .btn-analyze:disabled {
+      background: #1e3a5f;
+      color: #64748b;
       box-shadow: none;
+      cursor: not-allowed;
       transform: none;
     }
 
     .spinner {
       display: none;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,0.3);
+      width: 18px;
+      height: 18px;
+      border: 3px solid rgba(255,255,255,0.25);
       border-radius: 50%;
       border-top-color: #fff;
       animation: spin 0.8s linear infinite;
@@ -377,170 +284,117 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Result Card */
+    /* Result Display Card */
     #resultCard {
       display: none;
-      border: 1px solid #3b82f6;
-      background: linear-gradient(180deg, #1e293b, #0f172a);
-      animation: fadeIn 0.3s ease-out;
+      border: 1px solid var(--teal-accent);
+      background: linear-gradient(180deg, #132238 0%, #0b1320 100%);
+      border-radius: 14px;
+      padding: 16px;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .result-header {
+    .badges-row {
       display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      border-bottom: 1px solid #334155;
-      padding-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
     }
 
-    .result-equip-badge {
-      display: inline-block;
-      background: #2563eb;
+    .badge-equip {
+      background: var(--teal-primary);
       color: #fff;
+      font-weight: 700;
       font-size: 0.78rem;
-      font-weight: 700;
-      padding: 3px 8px;
+      padding: 3px 10px;
       border-radius: 6px;
-      margin-bottom: 4px;
     }
 
-    .result-title {
-      font-size: 1.15rem;
+    .badge-error {
+      background: var(--danger);
+      color: #fff;
       font-weight: 700;
-      color: #f8fafc;
+      font-size: 0.78rem;
+      padding: 3px 10px;
+      border-radius: 6px;
     }
 
-    .result-score {
+    .badge-match {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+
+    .badge-match.matched {
       background: rgba(16, 185, 129, 0.2);
       color: #34d399;
       border: 1px solid rgba(16, 185, 129, 0.4);
-      padding: 4px 8px;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 700;
     }
 
-    .result-section {
+    .badge-match.new {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    .result-item {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-    }
-
-    .section-label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #94a3b8;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .resolution-content {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 0.9rem;
-      line-height: 1.6;
-      white-space: pre-wrap;
-      color: #e2e8f0;
-    }
-
-    .safety-alert {
-      background: rgba(245, 158, 11, 0.1);
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-size: 0.85rem;
-      color: #fcd34d;
-      line-height: 1.5;
-    }
-
-    .keywords-tag-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .keyword-tag {
-      background: #334155;
-      color: #93c5fd;
-      font-size: 0.72rem;
-      padding: 2px 8px;
-      border-radius: 12px;
-    }
-
-    /* TTS Controls */
-    .tts-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 10px;
-      padding: 10px 14px;
-      margin-top: 4px;
-    }
-
-    .tts-status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.82rem;
-      color: #93c5fd;
-    }
-
-    .tts-btn-group {
-      display: flex;
-      gap: 6px;
-    }
-
-    .btn-tts {
-      background: #334155;
-      border: 1px solid #475569;
-      color: #f1f5f9;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
       gap: 4px;
     }
 
-    .btn-tts:hover {
-      background: #475569;
+    .result-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--teal-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    /* Toast Notification */
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: #1e293b;
-      color: #f8fafc;
-      padding: 10px 20px;
-      border-radius: 30px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-      font-size: 0.85rem;
-      border: 1px solid #475569;
-      pointer-events: none;
-      opacity: 0;
-      transition: all 0.3s ease;
-      z-index: 999;
-      text-align: center;
+    .result-content {
+      background: #0b1320;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: #e2e8f0;
     }
 
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
+    .action-guide-box {
+      background: #08111e;
+      border: 1px solid #14b8a6;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #f0fdf4;
+      white-space: pre-wrap;
+    }
+
+    .tts-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #11253e;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .tts-btn {
+      background: #1e3a5f;
+      color: #e2e8f0;
+      border: 1px solid #2e5584;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .tts-btn:active {
+      background: var(--teal-primary);
     }
   </style>
 </head>
@@ -549,177 +403,119 @@
   <div class="container">
     <!-- Header -->
     <header>
-      <div class="header-title">
-        <h1>⚙️ 스마트 현장 설비 이슈 대응</h1>
-        <span>AI 기반 모바일 설비 보전 어시스턴트 MVP</span>
+      <div class="brand">
+        <h1>⚙️ 스마트 설비 보전</h1>
+        <span>MULTI-MODAL AI COPILOT</span>
       </div>
-      <div class="badge-status">
-        <span class="status-dot" id="serverStatusDot"></span>
-        <span id="serverStatusText">서버 연결 확인 중...</span>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <button type="button" class="tts-btn" onclick="configureApiKey()" style="padding: 4px 8px; font-size: 0.72rem;">🔑 키 설정</button>
+        <div class="badge-model">Gemini 2.5 Flash</div>
       </div>
     </header>
 
-    <!-- Quick Scenario Presets -->
-    <div class="card" style="padding: 12px;">
-      <div class="card-title">
-        <span>⚡ 테스트용 빠른 시나리오 선택</span>
-      </div>
-      <div class="preset-container">
-        <button class="preset-btn" onclick="applyPreset('CONV-02 컨베이어 벨트 모터에서 E-402 진동 알람이 계속 떠요')">
-          🔴 CONV-02 진동 알람
-        </button>
-        <button class="preset-btn" onclick="applyPreset('PRESS-01 유압 프레스 하부 밸브에서 기름이 새고 압력이 떨어집니다')">
-          🟡 PRESS-01 유압 누유
-        </button>
-        <button class="preset-btn" onclick="applyPreset('ROBOT-03 차체 로봇 J2축 서보 과부하 에러로 동작 정지됐습니다')">
-          🔵 ROBOT-03 서보 과부하
-        </button>
-      </div>
-    </div>
-
-    <!-- Section 1: Camera Capture -->
+    <!-- 1. Photo Capture -->
     <div class="card">
-      <div class="card-title">
-        <span>📸 1. 설비 이상 부위 사진 (선택)</span>
-        <span id="photoStatusText" style="font-size: 0.75rem; color: #64748b;">미등록</span>
+      <div class="card-header">
+        <span>📸 1. 설비 이상 부위 사진</span>
+        <span class="file-size-tag" id="imgSizeTag">미등록</span>
       </div>
 
-      <div class="camera-box" id="cameraBox" onclick="document.getElementById('photoInput').click()">
-        <input type="file" id="photoInput" accept="image/*" capture="environment">
-        <div class="camera-content">
-          <span class="camera-icon">📷</span>
-          <span class="camera-text">카메라로 촬영하거나 사진 선택</span>
-          <span class="camera-subtext">모바일 기기에서는 카메라가 직접 실행됩니다</span>
-        </div>
+      <div class="photo-area" id="photoArea" onclick="document.getElementById('imageInput').click()">
+        <input type="file" id="imageInput" accept="image/*" capture="environment">
+        <div class="photo-icon">📷</div>
+        <div class="photo-title">카메라 촬영 또는 사진 선택</div>
+        <div class="photo-desc">설비 명판, 에러 화면, 누유/진동 부위를 촬영하세요</div>
       </div>
 
-      <div class="preview-container" id="previewContainer">
+      <div class="preview-box" id="previewBox">
         <img id="photoPreview" alt="현장 사진 미리보기">
-        <button class="btn-remove-photo" onclick="removePhoto(event)">✕</button>
+        <button type="button" class="btn-remove-photo" onclick="removePhoto(event)">✕</button>
       </div>
     </div>
 
-    <!-- Section 2: Push-to-Talk Voice Input -->
+    <!-- 2. Voice Recording (MediaRecorder API) -->
     <div class="card">
-      <div class="card-title">
-        <span>🎙️ 2. 음성 설비 증상 입력 (누르고 말하기)</span>
-        <div class="ptt-mode-toggle">
-          <button type="button" class="btn-toggle-rec" onclick="clearVoiceText()" style="background: #475569;">지우기</button>
-          <button type="button" class="btn-toggle-rec" id="btnToggleRec" onclick="toggleRecording()">원클릭 녹음</button>
-        </div>
+      <div class="card-header">
+        <span>🎙️ 2. 작업자 이상 증상 음성 녹음</span>
+        <span class="file-size-tag" id="audioSizeTag">미녹음</span>
       </div>
 
-      <div class="ptt-wrapper">
-        <button type="button" class="ptt-btn" id="pttButton">
-          <span class="ptt-btn-icon">🎙️</span>
-          <span class="ptt-btn-label">HOLD</span>
+      <div class="audio-control-box">
+        <button type="button" class="btn-rec-toggle" id="btnRecToggle" onclick="toggleRecording()">
+          <span id="recIcon">🎙️</span>
         </button>
-        <div class="ptt-status-text" id="pttStatus">버튼을 길게 누른 상태로 증상을 말씀하세요</div>
+        <div class="rec-status-label" id="recStatusLabel">마이크 버튼을 눌러 녹음을 시작하세요</div>
+        <audio id="audioPlayback" class="audio-playback" controls></audio>
       </div>
-
-      <textarea id="voiceTextBox" class="voice-text-box" placeholder="음성 인식 결과가 여기에 표시됩니다. (키보드로 직접 입력/수정 가능)&#10;예: 2호기 컨베이어에서 E-402 진동 알람이 발생했습니다."></textarea>
     </div>
 
-    <!-- Section 3: Submit Button -->
-    <button type="button" class="btn-submit" id="btnSubmit" onclick="submitIssue()">
-      <span class="spinner" id="loadingSpinner"></span>
-      <span id="submitBtnText">🔍 이슈 조회 및 해결책 요청</span>
+    <!-- 3. Analyze Button -->
+    <button type="button" class="btn-analyze" id="btnAnalyze" onclick="requestAiAnalysis()">
+      <span class="spinner" id="analyzeSpinner"></span>
+      <span id="analyzeBtnText">✨ AI 분석 및 해결책 조회</span>
     </button>
 
-    <!-- Section 4: Resolution & TTS Result -->
+    <!-- 4. Result Display Card -->
     <div class="card" id="resultCard">
-      <div class="result-header">
-        <div>
-          <span class="result-equip-badge" id="resEquipCode">EQUIP-00</span>
-          <h2 class="result-title" id="resIssueTitle">설비 이슈 제목</h2>
-          <span id="resEquipName" style="font-size: 0.78rem; color: #94a3b8;">설비 세부명</span>
-        </div>
-        <div class="result-score" id="resConfidence">적합도 95%</div>
+      <div class="badges-row">
+        <span class="badge-equip" id="resEquip">EQUIP</span>
+        <span class="badge-error" id="resError">ERROR</span>
+        <span class="badge-match" id="resMatch">이력 확인</span>
       </div>
 
-      <!-- TTS Voice Audio Bar -->
+      <!-- TTS Bar -->
       <div class="tts-bar">
-        <div class="tts-status">
-          <span id="ttsSpeakerIcon">🔊</span>
-          <span id="ttsStatusLabel">해결책 음성 안내 준비됨</span>
-        </div>
-        <div class="tts-btn-group">
-          <button class="btn-tts" onclick="speakCurrentResult()">다시 듣기</button>
-          <button class="btn-tts" onclick="stopTTS()">음성 정지</button>
+        <span style="font-size: 0.78rem; color: #5eead4;">🔊 음성 안내 지원</span>
+        <div style="display:flex; gap:6px;">
+          <button class="tts-btn" onclick="speakActionGuide()">다시 듣기</button>
+          <button class="tts-btn" onclick="stopTTS()">정지</button>
         </div>
       </div>
 
-      <!-- Symptom Description -->
-      <div class="result-section">
-        <span class="section-label">⚠️ 감지된 이상 증상</span>
-        <div class="resolution-content" id="resSymptom" style="color: #cbd5e1; background: #0b1329;"></div>
+      <!-- Transcribed Voice -->
+      <div class="result-item">
+        <span class="result-label">🗣️ 작업자 음성 받아쓰기</span>
+        <div class="result-content" id="resVoice">-</div>
       </div>
 
-      <!-- Step-by-Step Resolution -->
-      <div class="result-section">
-        <span class="section-label">💡 표준 현장 조치 가이드</span>
-        <div class="resolution-content" id="resResolution"></div>
+      <!-- Symptom Summary -->
+      <div class="result-item">
+        <span class="result-label">🔍 사진 + 음성 종합 증상</span>
+        <div class="result-content" id="resSymptom">-</div>
       </div>
 
-      <!-- Safety Precautions -->
-      <div class="result-section">
-        <span class="section-label">🛑 필수 안전 주의사항</span>
-        <div class="safety-alert" id="resSafety"></div>
-      </div>
-
-      <!-- Match Metadata -->
-      <div class="result-section">
-        <span class="section-label">🏷️ 매칭 키워드</span>
-        <div class="keywords-tag-list" id="resKeywords"></div>
+      <!-- Step-by-Step Action Guide -->
+      <div class="result-item">
+        <span class="result-label">💡 현장 조치 가이드</span>
+        <div class="action-guide-box" id="resActionGuide">-</div>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification -->
-  <div class="toast" id="toast">알림 메시지</div>
-
   <script>
-    // State variables
-    let recognition = null;
-    let isRecording = null;
-    let selectedPhotoFile = null;
-    let currentTtsText = "";
-    let isTtsPlaying = false;
+    let selectedImageFile = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let recordedAudioBlob = null;
+    let currentActionGuide = "";
 
-    // Toast helper
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.classList.add('show');
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 2500);
-    }
-
-    // Quick preset helper
-    function applyPreset(text) {
-      document.getElementById('voiceTextBox').value = text;
-      showToast('시나리오 텍스트가 입력되었습니다. [요청] 버튼을 누르세요.');
-    }
-
-    // Photo input handler
-    const photoInput = document.getElementById('photoInput');
+    // 1. Image Handlers
+    const imageInput = document.getElementById('imageInput');
     const photoPreview = document.getElementById('photoPreview');
-    const previewContainer = document.getElementById('previewContainer');
-    const cameraBox = document.getElementById('cameraBox');
-    const photoStatusText = document.getElementById('photoStatusText');
+    const previewBox = document.getElementById('previewBox');
+    const photoArea = document.getElementById('photoArea');
+    const imgSizeTag = document.getElementById('imgSizeTag');
 
-    photoInput.addEventListener('change', (e) => {
+    imageInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
-        selectedPhotoFile = file;
+        selectedImageFile = file;
         const reader = new FileReader();
         reader.onload = (event) => {
           photoPreview.src = event.target.result;
-          previewContainer.style.display = 'block';
-          cameraBox.style.display = 'none';
-          photoStatusText.textContent = `${file.name} (${Math.round(file.size / 1024)}KB)`;
-          photoStatusText.style.color = '#34d399';
+          previewBox.style.display = 'block';
+          photoArea.style.display = 'none';
+          imgSizeTag.textContent = `${Math.round(file.size / 1024)} KB`;
         };
         reader.readAsDataURL(file);
       }
@@ -727,467 +523,289 @@
 
     function removePhoto(event) {
       event.stopPropagation();
-      selectedPhotoFile = null;
-      photoInput.value = '';
-      previewContainer.style.display = 'none';
-      cameraBox.style.display = 'block';
-      photoStatusText.textContent = '미등록';
-      photoStatusText.style.color = '#64748b';
+      selectedImageFile = null;
+      imageInput.value = '';
+      previewBox.style.display = 'none';
+      photoArea.style.display = 'block';
+      imgSizeTag.textContent = '미등록';
     }
 
-    // ==========================================
-    // Web Speech API (Speech to Text)
-    // ==========================================
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const pttButton = document.getElementById('pttButton');
-    const pttStatus = document.getElementById('pttStatus');
-    const voiceTextBox = document.getElementById('voiceTextBox');
-    const btnToggleRec = document.getElementById('btnToggleRec');
+    // 2. Audio Handlers (MediaRecorder API)
+    const btnRecToggle = document.getElementById('btnRecToggle');
+    const recIcon = document.getElementById('recIcon');
+    const recStatusLabel = document.getElementById('recStatusLabel');
+    const audioSizeTag = document.getElementById('audioSizeTag');
+    const audioPlayback = document.getElementById('audioPlayback');
 
-    if (SpeechRecognition) {
-      recognition = new SpeechRecognition();
-      recognition.lang = 'ko-KR';
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.maxAlternatives = 1;
-
-      recognition.onstart = () => {
-        isRecording = true;
-        pttButton.classList.add('recording');
-        btnToggleRec.classList.add('recording');
-        btnToggleRec.textContent = '녹음 중지';
-        pttStatus.textContent = '🔴 듣고 있습니다... 증상을 말씀하세요!';
-        pttStatus.classList.add('active');
-      };
-
-      recognition.onresult = (event) => {
-        let completeFinal = '';
-        let completeInterim = '';
-
-        // 모바일 브라우저의 중복 누적 버그를 방지하기 위해 results 전체를 매번 재구성
-        for (let i = 0; i < event.results.length; ++i) {
-          const item = event.results[i];
-          if (item[0] && item[0].transcript) {
-            if (item.isFinal) {
-              completeFinal += item[0].transcript + ' ';
-            } else {
-              completeInterim += item[0].transcript;
-            }
-          }
-        }
-
-        const fullText = (completeFinal + completeInterim).trim();
-        if (fullText) {
-          voiceTextBox.value = fullText;
-        }
-      };
-
-      recognition.onerror = (event) => {
-        console.warn('SpeechRecognition error:', event.error);
-        if (event.error !== 'no-speech') {
-          showToast(`음성 인식 오류: ${event.error}`);
-        }
-        stopRecordingState();
-      };
-
-      recognition.onend = () => {
-        stopRecordingState();
-      };
-    } else {
-      pttStatus.textContent = '현재 브라우저가 Web Speech API를 지원하지 않습니다. 텍스트로 직접 입력하세요.';
-      pttButton.disabled = true;
-      pttButton.style.opacity = '0.5';
-      btnToggleRec.disabled = true;
-    }
-
-    function startRecording() {
-      if (!recognition) return;
-      if (isRecording) return;
-      try {
-        stopTTS(); // 이전 음성 안내 중지
-        // 새 녹음 시작 시 기존 텍스트 초기화
-        voiceTextBox.value = '';
-        recognition.start();
-      } catch (err) {
-        console.error('Recognition start error:', err);
-      }
-    }
-
-    function stopRecording() {
-      if (!recognition) return;
-      if (!isRecording) return;
-      try {
-        recognition.stop();
-      } catch (err) {
-        console.error('Recognition stop error:', err);
-      }
-    }
-
-    function stopRecordingState() {
-      isRecording = false;
-      pttButton.classList.remove('recording');
-      btnToggleRec.classList.remove('recording');
-      btnToggleRec.textContent = '원클릭 녹음';
-      pttStatus.textContent = '버튼을 길게 누른 상태로 증상을 말씀하세요';
-      pttStatus.classList.remove('active');
-    }
-
-    function clearVoiceText() {
-      voiceTextBox.value = '';
-      showToast('텍스트가 초기화되었습니다.');
-    }
-
-    // Toggle button for desktop or accessibility
-    function toggleRecording() {
-      if (!recognition) {
-        showToast('음성 인식을 지원하지 않는 브라우저입니다.');
+    async function toggleRecording() {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        // Stop recording
+        mediaRecorder.stop();
         return;
       }
-      if (isRecording) {
-        stopRecording();
-      } else {
-        startRecording();
-      }
-    }
 
-    // Push-to-Talk (Hold-to-Talk) Pointer & Touch Handlers
-    pttButton.addEventListener('pointerdown', (e) => {
-      e.preventDefault();
-      startRecording();
-    });
+      // Start recording
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioChunks = [];
+        
+        // Determine supported MIME type
+        let mimeType = 'audio/webm';
+        if (!MediaRecorder.isTypeSupported('audio/webm')) {
+          if (MediaRecorder.isTypeSupported('audio/mp4')) mimeType = 'audio/mp4';
+          else if (MediaRecorder.isTypeSupported('audio/ogg')) mimeType = 'audio/ogg';
+        }
 
-    pttButton.addEventListener('pointerup', (e) => {
-      e.preventDefault();
-      stopRecording();
-    });
+        mediaRecorder = new MediaRecorder(stream, { mimeType });
 
-    pttButton.addEventListener('pointercancel', (e) => {
-      e.preventDefault();
-      stopRecording();
-    });
-
-    // Spacebar PTT support when focused or general keyboard usage
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && e.target === document.body && !isRecording) {
-        e.preventDefault();
-        startRecording();
-      }
-    });
-    window.addEventListener('keyup', (e) => {
-      if (e.code === 'Space' && e.target === document.body && isRecording) {
-        e.preventDefault();
-        stopRecording();
-      }
-    });
-
-    // ==========================================
-    // Standalone & Fallback Engine (for GitHub Pages)
-    // ==========================================
-    const clientSampleIssues = [
-      {
-        equipmentCode: "CONV-02",
-        equipmentName: "2호기 이송 컨베이어 라인",
-        issueTitle: "E-402 구동축 진동 이상 알람",
-        symptom: "구동 모터 측 비정상 고주파 진동 및 E-402 진동 센서 경보(임계치 4.5mm/s 초과) 발생",
-        resolution: "1단계: 구동 모터 베어링의 윤활유(그리스) 급유 상태 및 누유 여부를 즉시 점검하십시오.\n" +
-                    "2단계: 컨베이어 롤러 축 정렬 불량 및 벨트 하부 이물질 끼임 상태를 육안 점검하십시오.\n" +
-                    "3단계: 진동이 지속될 경우 인버터 주파수를 30Hz로 감속 운전하고, 보전팀(내선 102)에 긴급 점검을 요청하십시오.",
-        safetyPrecautions: "점검 전 반드시 메인 인버터 제어반 전원을 차단(LOTO)하고, 회전체에 손이나 장갑이 말려 들어가지 않도록 1m 이상 안전거리를 유지하십시오.",
-        keywords: ["conv", "conv-02", "컨베이어", "컨베이", "e-402", "e402", "진동", "알람", "베어링", "모터", "롤러", "벨트", "떨림", "흔들림"]
-      },
-      {
-        equipmentCode: "PRESS-01",
-        equipmentName: "1호기 500톤 유압 프레스 성형기",
-        issueTitle: "하부 매니폴드 유압 누유 및 압력 강하",
-        symptom: "하부 매니폴드 블록 밸브 피팅부 오일 누유 및 시스템 유압 게이지 15% 급격한 강하 현상",
-        resolution: "1단계: 메인 유압 펌프 공급 밸브(HV-01)를 잠그고 비상 정지(E-Stop) 상태를 유지하십시오.\n" +
-                    "2단계: 고압 호스 커플링 및 O-링 체결 상태를 점검하여 규정 토크(45N·m)로 재체결하십시오.\n" +
-                    "3단계: 누유 바닥 구역에 오일 흡착포를 전면 도포하고, 리저버 탱크 잔여 유량을 확인 후 보충하십시오.",
-        safetyPrecautions: "고압 유압유 미세 분사로 인한 화상 및 피부 침투 위험이 있으므로 보안경과 내유성 보호장갑을 필히 착용하고 바닥 미끄러짐에 주의하십시오.",
-        keywords: ["press", "press-01", "프레스", "유압", "누유", "기름", "오일", "압력", "밸브", "호스", "새", "새는", "새고", "리크"]
-      },
-      {
-        equipmentCode: "ROBOT-03",
-        equipmentName: "3호기 차체 용접 6축 다관절 로봇",
-        issueTitle: "J2 축 서보 과부하(Overload) 정지",
-        symptom: "J2 축 서보 모터 발열 경고 및 AL-105 서보 과부하(Overload) 인터록 트립 발생",
-        resolution: "1단계: 로봇 가동 반경 내 그리퍼 지그 간섭, 케이블 트랙 꼬임 및 기구적 걸림 여부를 확인하십시오.\n" +
-                    "2단계: 티칭 펜던트 진단 메뉴에서 J2 축 모터 부하율(정상치 80% 이하 / 현재 과부하치)을 확인하십시오.\n" +
-                    "3단계: 기구적 이상이 없으면 10분간 자연 냉각 후 알람을 리셋하고 저속(10%) 수동 조작(Jog)으로 원점 복귀하십시오.",
-        safetyPrecautions: "안전 펜스 내부 진입 전 안전 플러그를 반드시 소지하여 도어 인터록을 활성화하고, 티칭 펜던트의 데드맨 스위치를 잡은 상태로 진입하십시오.",
-        keywords: ["robot", "robot-03", "로봇", "서보", "과부하", "오버로드", "al-105", "al105", "j2", "모터", "감속기", "티칭", "에러", "정지"]
-      }
-    ];
-
-    function analyzeLocally(voiceText, photoFile) {
-      const lower = voiceText.toLowerCase();
-      const tokens = lower.split(/[\s,.\-_/]+/).filter(t => t.length > 0);
-
-      let bestMatch = null;
-      let maxScore = 0;
-      let bestMatchedKw = [];
-
-      for (const item of clientSampleIssues) {
-        let score = 0;
-        let matched = [];
-        for (const kw of item.keywords) {
-          if (tokens.includes(kw)) {
-            score += 30;
-            matched.push(kw);
-          } else if (lower.includes(kw)) {
-            score += 15;
-            matched.push(kw);
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) {
+            audioChunks.push(e.data);
           }
-        }
-        if (lower.includes(item.equipmentCode.toLowerCase())) {
-          score += 40;
-        }
-
-        if (score > maxScore) {
-          maxScore = score;
-          bestMatch = item;
-          bestMatchedKw = [...new Set(matched)];
-        }
-      }
-
-      if (bestMatch && maxScore >= 15) {
-        return {
-          matched: true,
-          equipmentCode: bestMatch.equipmentCode,
-          equipmentName: bestMatch.equipmentName,
-          issueTitle: bestMatch.issueTitle,
-          symptom: bestMatch.symptom,
-          resolution: bestMatch.resolution,
-          safetyPrecautions: bestMatch.safetyPrecautions,
-          matchedKeywords: bestMatchedKw,
-          confidenceScore: Math.min(98, Math.max(65, maxScore)),
-          photoReceived: !!photoFile,
-          photoFileName: photoFile ? photoFile.name : null,
-          receivedVoiceText: voiceText,
-          ttsSummary: `${bestMatch.equipmentName} ${bestMatch.issueTitle} 조치 방법입니다. ${bestMatch.resolution} 안전 수칙: ${bestMatch.safetyPrecautions}`
         };
-      }
 
-      return {
-        matched: false,
-        receivedVoiceText: voiceText,
-        photoReceived: !!photoFile,
-        photoFileName: photoFile ? photoFile.name : null,
-        resolution: "입력된 음성에서 일치하는 설비 이슈를 찾지 못했습니다.\n" +
-                     "설비 번호(CONV-02, PRESS-01, ROBOT-03)나 이상 증상(진동, 누유, 과부하)을 포함하여 다시 말씀해 주십시오.\n" +
-                     "긴급 상황 발생 시 현장 안전관리자(내선 119)에 즉시 유선 연락 바랍니다.",
-        safetyPrecautions: "확인되지 않은 설비는 임의 조작을 금지하며, 이상 구역에 안전 라인을 설치하십시오.",
-        ttsSummary: "일치하는 설비 이슈를 찾지 못했습니다. 설비 번호나 고장 증상을 다시 말씀해 주십시오."
-      };
+        mediaRecorder.onstart = () => {
+          btnRecToggle.classList.add('recording');
+          recIcon.textContent = '⏹️';
+          recStatusLabel.textContent = '🔴 녹음 중... 증상을 말씀하신 후 다시 버튼을 누르세요';
+          recStatusLabel.style.color = '#f43f5e';
+          stopTTS();
+        };
+
+        mediaRecorder.onstop = () => {
+          btnRecToggle.classList.remove('recording');
+          recIcon.textContent = '🎙️';
+          recStatusLabel.textContent = '✅ 녹음 완료 (다시 녹음하려면 버튼을 누르세요)';
+          recStatusLabel.style.color = '#14b8a6';
+
+          recordedAudioBlob = new Blob(audioChunks, { type: mimeType });
+          audioSizeTag.textContent = `${Math.round(recordedAudioBlob.size / 1024)} KB`;
+
+          audioPlayback.src = URL.createObjectURL(recordedAudioBlob);
+          audioPlayback.style.display = 'block';
+
+          // Stop all mic tracks
+          stream.getTracks().forEach(track => track.stop());
+        };
+
+        mediaRecorder.start();
+      } catch (err) {
+        console.error('Microphone access error:', err);
+        alert('마이크 접근 권한이 필요합니다: ' + err.message);
+      }
     }
 
-    // Check Server Connectivity on load
-    let hasBackendServer = false;
-    async function checkBackend() {
-      const dot = document.getElementById('serverStatusDot');
-      const text = document.getElementById('serverStatusText');
-      try {
-        const res = await fetch('/api/issues', { method: 'GET' });
-        if (res.ok) {
-          hasBackendServer = true;
-          dot.style.background = '#34d399';
-          text.textContent = 'C# 서버 API 연결됨';
-          return;
+    // Helper: File/Blob to Base64
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const res = reader.result;
+          const base64 = res.substring(res.indexOf(',') + 1);
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    function configureApiKey() {
+      const current = localStorage.getItem('gemini_api_key') || "";
+      const newKey = prompt("GitHub Pages용 Gemini API Key를 입력하세요 (기기 로컬에만 안전하게 저장됩니다):", current);
+      if (newKey !== null) {
+        localStorage.setItem('gemini_api_key', newKey.trim());
+        alert("API Key가 저장되었습니다!");
+      }
+    }
+
+    async function callGeminiDirectlyFromBrowser(imageFile, audioBlob) {
+      let apiKey = localStorage.getItem('gemini_api_key') || "";
+      if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY") {
+        apiKey = prompt("GitHub Pages 모드입니다. Gemini API Key를 입력해 주세요 (브라우저에만 안전하게 저장됩니다):");
+        if (!apiKey) throw new Error("Gemini API Key가 입력되지 않았습니다.");
+        apiKey = apiKey.trim();
+        localStorage.setItem('gemini_api_key', apiKey);
+      }
+
+      let imageBase64 = null;
+      let imageMime = "image/jpeg";
+      if (imageFile) {
+        imageMime = imageFile.type || "image/jpeg";
+        imageBase64 = await blobToBase64(imageFile);
+      }
+
+      let audioBase64 = null;
+      let audioMime = "audio/webm";
+      if (audioBlob) {
+        audioMime = audioBlob.type || "audio/webm";
+        audioBase64 = await blobToBase64(audioBlob);
+      }
+
+      const parts = [
+        {
+          text: "당신은 스마트 팩토리 현장 설비 보전 전문가 AI입니다. 첨부된 사진과 작업자의 음성 녹음을 분석하여 식별된 설비 코드, 에러 코드, 음성 받아쓰기(한국어), 증상 요약, 기존 이력 매칭 여부, 단계별 현장 조치 가이드를 JSON으로 작성하세요.\n[기존 설비 이력]: CONV-02(E-402 구동축 진동 알람), PRESS-01(E-105 매니폴드 유압 누유), CNC-04(AL-21 스핀들 냉각수 과열)"
         }
-      } catch (e) {
-        // Server not available (e.g. GitHub Pages or static host)
-      }
-      hasBackendServer = false;
-      dot.style.background = '#60a5fa';
-      text.textContent = '웹 단독 모드 (GitHub Pages 호환)';
-    }
-    checkBackend();
+      ];
 
-    // ==========================================
-    // Submit Issue to Minimal API or Local Engine
-    // ==========================================
-    async function submitIssue() {
-      const voiceText = voiceTextBox.value.trim();
-      if (!voiceText) {
-        showToast('음성을 녹음하거나 증상을 텍스트로 입력해 주세요.');
-        voiceTextBox.focus();
+      if (imageBase64) {
+        parts.push({
+          inline_data: { mime_type: imageMime, data: imageBase64 }
+        });
+      }
+
+      if (audioBase64) {
+        parts.push({
+          inline_data: { mime_type: audioMime, data: audioBase64 }
+        });
+      }
+
+      const payload = {
+        contents: [{ parts }],
+        generationConfig: {
+          temperature: 0.2,
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              equipmentCode: { type: "STRING", description: "식별된 설비 코드 (식별 불가 시 UNKNOWN)" },
+              errorCode: { type: "STRING", description: "식별된 에러 코드 (없으면 NONE)" },
+              transcribedVoice: { type: "STRING", description: "작업자 한국어 음성 받아쓰기" },
+              symptomSummary: { type: "STRING", description: "사진과 음성을 종합한 증상 요약" },
+              matchedFromHistory: { type: "BOOLEAN", description: "기존 과거 이력과의 일치 여부" },
+              actionGuide: { type: "STRING", description: "현장 작업자 단계별 조치 가이드 (TTS 읽기용)" }
+            },
+            required: ["equipmentCode", "errorCode", "transcribedVoice", "symptomSummary", "matchedFromHistory", "actionGuide"]
+          }
+        }
+      };
+
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Gemini API 오류 (${res.status}): ${errText}`);
+      }
+
+      const json = await res.json();
+      const rawText = json.candidates[0].content.parts[0].text;
+      return JSON.parse(rawText);
+    }
+
+    // 3. AI Analysis Request
+    async function requestAiAnalysis() {
+      if (!selectedImageFile && !recordedAudioBlob) {
+        alert('사진을 촬영하거나 음성을 녹음해 주세요.');
         return;
       }
 
-      const btnSubmit = document.getElementById('btnSubmit');
-      const spinner = document.getElementById('loadingSpinner');
-      const btnText = document.getElementById('submitBtnText');
+      const btnAnalyze = document.getElementById('btnAnalyze');
+      const spinner = document.getElementById('analyzeSpinner');
+      const btnText = document.getElementById('analyzeBtnText');
 
-      btnSubmit.disabled = true;
+      btnAnalyze.disabled = true;
       spinner.style.display = 'inline-block';
-      btnText.textContent = '설비 매뉴얼 분석 중...';
+      btnText.textContent = 'Gemini 2.5 Flash 멀티모달 분석 중...';
 
       let data = null;
 
-      if (hasBackendServer) {
+      try {
         const formData = new FormData();
-        formData.append('voiceText', voiceText);
-        if (selectedPhotoFile) {
-          formData.append('photo', selectedPhotoFile, selectedPhotoFile.name);
+        if (selectedImageFile) {
+          formData.append('image', selectedImageFile, selectedImageFile.name);
+        }
+        if (recordedAudioBlob) {
+          formData.append('audio', recordedAudioBlob, 'voice_record.webm');
         }
 
+        const response = await fetch('/api/issues/analyze', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          data = await response.json();
+        } else if (response.status === 404) {
+          // GitHub Pages 환경 (C# 서버 없음) -> 브라우저 직접 호출
+          data = await callGeminiDirectlyFromBrowser(selectedImageFile, recordedAudioBlob);
+        } else {
+          const errData = await response.json();
+          throw new Error(errData.details || errData.error || `서버 오류 (${response.status})`);
+        }
+      } catch (err) {
+        console.warn("C# 백엔드 호출 실패, 브라우저 직접 호출로 전환:", err);
         try {
-          const response = await fetch('/api/issues/analyze', {
-            method: 'POST',
-            body: formData
-          });
+          data = await callGeminiDirectlyFromBrowser(selectedImageFile, recordedAudioBlob);
+        } catch (clientErr) {
+          console.error(clientErr);
+          alert('분석 요청 실패: ' + clientErr.message);
+          return;
+        }
+      } finally {
+        btnAnalyze.disabled = false;
+        spinner.style.display = 'none';
+        btnText.textContent = '✨ AI 분석 및 해결책 조회';
+      }
 
-          if (response.ok) {
-            data = await response.json();
-          } else {
-            console.warn('API returned non-200, falling back to local analysis');
-          }
-        } catch (err) {
-          console.warn('Server fetch error, falling back to local engine:', err);
+      if (data) {
+        renderResult(data);
+
+        // TTS 즉시 읽어주기
+        if (data.actionGuide) {
+          currentActionGuide = data.actionGuide;
+          speakActionGuide();
         }
       }
-
-      // If backend not present or fetch failed, execute local analysis engine (GitHub Pages)
-      if (!data) {
-        await new Promise(r => setTimeout(r, 400)); // 짧은 분석 시뮬레이션 지연
-        data = analyzeLocally(voiceText, selectedPhotoFile);
-      }
-
-      renderResult(data);
-
-      // TTS 자동 읽어주기
-      if (data.ttsSummary) {
-        currentTtsText = data.ttsSummary;
-        speakText(data.ttsSummary);
-      }
-
-      btnSubmit.disabled = false;
-      spinner.style.display = 'none';
-      btnText.textContent = '🔍 이슈 조회 및 해결책 요청';
     }
 
     function renderResult(data) {
       const resultCard = document.getElementById('resultCard');
-      const resEquipCode = document.getElementById('resEquipCode');
-      const resIssueTitle = document.getElementById('resIssueTitle');
-      const resEquipName = document.getElementById('resEquipName');
-      const resConfidence = document.getElementById('resConfidence');
+      const resEquip = document.getElementById('resEquip');
+      const resError = document.getElementById('resError');
+      const resMatch = document.getElementById('resMatch');
+      const resVoice = document.getElementById('resVoice');
       const resSymptom = document.getElementById('resSymptom');
-      const resResolution = document.getElementById('resResolution');
-      const resSafety = document.getElementById('resSafety');
-      const resKeywords = document.getElementById('resKeywords');
+      const resActionGuide = document.getElementById('resActionGuide');
 
-      resultCard.style.display = 'flex';
+      resEquip.textContent = data.equipmentCode || 'UNKNOWN';
+      resError.textContent = data.errorCode || 'NONE';
 
-      if (data.matched) {
-        resEquipCode.textContent = data.equipmentCode || '알 수 없음';
-        resEquipCode.style.background = '#2563eb';
-        resIssueTitle.textContent = data.issueTitle || '이슈 세부정보';
-        resEquipName.textContent = data.equipmentName || '';
-        resConfidence.textContent = `신뢰도 ${data.confidenceScore}%`;
-        resConfidence.style.display = 'inline-block';
-        resSymptom.parentElement.style.display = 'flex';
-        resSymptom.textContent = data.symptom || '-';
-
-        resKeywords.innerHTML = '';
-        if (data.matchedKeywords && data.matchedKeywords.length > 0) {
-          data.matchedKeywords.forEach(kw => {
-            const span = document.createElement('span');
-            span.className = 'keyword-tag';
-            span.textContent = `#${kw}`;
-            resKeywords.appendChild(span);
-          });
-        }
+      if (data.matchedFromHistory) {
+        resMatch.textContent = '기존 이력 매칭됨';
+        resMatch.className = 'badge-match matched';
       } else {
-        resEquipCode.textContent = '미식별';
-        resEquipCode.style.background = '#64748b';
-        resIssueTitle.textContent = '일치하는 설비 이슈를 찾지 못함';
-        resEquipName.textContent = '추가 키워드 입력을 권장합니다.';
-        resConfidence.style.display = 'none';
-        resSymptom.parentElement.style.display = 'none';
-        resKeywords.innerHTML = '<span class="keyword-tag">#불일치</span>';
+        resMatch.textContent = '신규 이슈 (자동 등록됨)';
+        resMatch.className = 'badge-match new';
       }
 
-      resResolution.textContent = data.resolution || '조치 가이드가 없습니다.';
-      resSafety.textContent = data.safetyPrecautions || '기본 안전 수칙을 준수하십시오.';
+      resVoice.textContent = data.transcribedVoice || '(음성 입력 없음)';
+      resSymptom.textContent = data.symptomSummary || '-';
+      resActionGuide.textContent = data.actionGuide || '-';
 
-      // Smooth scroll to result
+      resultCard.style.display = 'flex';
       resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    // ==========================================
-    // Browser TTS (Speech Synthesis)
-    // ==========================================
-    function speakText(text) {
-      if (!('speechSynthesis' in window)) {
-        showToast('브라우저가 음성 합성(TTS)을 지원하지 않습니다.');
-        return;
-      }
+    // 4. TTS (Text-to-Speech)
+    function speakActionGuide() {
+      if (!('speechSynthesis' in window)) return;
+      if (!currentActionGuide) return;
 
-      window.speechSynthesis.cancel(); // 기존 음성 취소
-
-      const utterance = new SpeechSynthesisUtterance(text);
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(currentActionGuide);
       utterance.lang = 'ko-KR';
       utterance.rate = 1.0;
-      utterance.pitch = 1.0;
-
-      // 한국어 음성 우선 선택
-      const voices = window.speechSynthesis.getVoices();
-      const koVoice = voices.find(v => v.lang.startsWith('ko') || v.lang.includes('KR'));
-      if (koVoice) {
-        utterance.voice = koVoice;
-      }
-
-      const ttsStatusLabel = document.getElementById('ttsStatusLabel');
-      const ttsSpeakerIcon = document.getElementById('ttsSpeakerIcon');
-
-      utterance.onstart = () => {
-        isTtsPlaying = true;
-        ttsStatusLabel.textContent = '🔊 해결책 음성 안내 출력 중...';
-        ttsSpeakerIcon.style.animation = 'pulse 1s infinite';
-      };
-
-      utterance.onend = () => {
-        isTtsPlaying = false;
-        ttsStatusLabel.textContent = '해결책 음성 안내 완료';
-        ttsSpeakerIcon.style.animation = 'none';
-      };
-
-      utterance.onerror = () => {
-        isTtsPlaying = false;
-        ttsStatusLabel.textContent = '음성 안내 오류';
-        ttsSpeakerIcon.style.animation = 'none';
-      };
-
       window.speechSynthesis.speak(utterance);
-    }
-
-    function speakCurrentResult() {
-      if (currentTtsText) {
-        speakText(currentTtsText);
-      } else {
-        showToast('재생할 안내 내용이 없습니다.');
-      }
     }
 
     function stopTTS() {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
-      isTtsPlaying = false;
-      const ttsStatusLabel = document.getElementById('ttsStatusLabel');
-      const ttsSpeakerIcon = document.getElementById('ttsSpeakerIcon');
-      if (ttsStatusLabel) ttsStatusLabel.textContent = '음성 안내 정지됨';
-      if (ttsSpeakerIcon) ttsSpeakerIcon.style.animation = 'none';
-    }
-
-    // Ensure voices are loaded (required for Chrome/Safari)
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.onvoiceschanged = () => {
-        window.speechSynthesis.getVoices();
-      };
     }
   </script>
 </body>
 </html>
-
