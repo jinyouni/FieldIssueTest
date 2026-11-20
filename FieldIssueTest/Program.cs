@@ -63,7 +63,7 @@ var issueHistory = new List<EquipmentIssueRecord>
 // GET: 이슈 목록 조회 (디버그/이력 확인용)
 app.MapGet("/api/issues", () => Results.Ok(issueHistory));
 
-// POST: 사진(image)과 음성(audio)을 받아 Gemini 2.5 Flash 멀티모달 분석
+// POST: 사진(image)과 음성(audio)을 받아 Gemini 3.8 Flash 멀티모달 분석
 app.MapPost("/api/issues/analyze", async (HttpRequest request, IConfiguration config, IHttpClientFactory httpClientFactory) =>
 {
     if (!request.HasFormContentType)
@@ -102,7 +102,7 @@ app.MapPost("/api/issues/analyze", async (HttpRequest request, IConfiguration co
     }
 
     var apiKey = config["Gemini:ApiKey"] ?? "";
-    var model = config["Gemini:Model"] ?? "gemini-2.5-flash";
+    var model = config["Gemini:Model"] ?? "gemini-3.8-flash";
 
     // 2. API Key 미입력 시 스마트 시뮬레이션 모드로 동작 안내
     if (string.IsNullOrWhiteSpace(apiKey) || apiKey == "YOUR_GEMINI_API_KEY")
@@ -118,7 +118,7 @@ app.MapPost("/api/issues/analyze", async (HttpRequest request, IConfiguration co
         return Results.Ok(mockResult);
     }
 
-    // 3. Google Gemini 2.5 Flash REST API 요청 페이로드 구성
+    // 3. Google Gemini 3.8 Flash REST API 요청 페이로드 구성
     var partsList = new List<object>();
 
     // 프롬프트 및 기존 이력 데이터 JSON 전달
