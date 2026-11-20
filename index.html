@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>스마트 설비 보전 AI 어시스턴트 (Gemini 3.8 Flash)</title>
+  <title>스마트 설비 보전 AI 어시스턴트 (Gemini 3.5 Flash)</title>
   <style>
     :root {
       --bg: #0b1320;
@@ -409,7 +409,7 @@
       </div>
       <div style="display:flex; align-items:center; gap:6px;">
         <button type="button" class="tts-btn" onclick="configureApiKey()" style="padding: 4px 8px; font-size: 0.72rem;">🔑 키 설정</button>
-        <div class="badge-model">Gemini 3.8 Flash</div>
+        <div class="badge-model">Gemini 3.5 Flash</div>
       </div>
     </header>
 
@@ -682,7 +682,7 @@
       const MAX_RETRIES = 3;
       const btnText = document.getElementById('analyzeBtnText');
       for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -720,7 +720,7 @@
 
       btnAnalyze.disabled = true;
       spinner.style.display = 'inline-block';
-      btnText.textContent = 'Gemini 3.8 Flash 멀티모달 분석 중...';
+      btnText.textContent = 'Gemini 3.5 Flash 멀티모달 분석 중...';
 
       let data = null;
 
