@@ -604,6 +604,7 @@
       <div class="card-title">
         <span>🎙️ 2. 음성 설비 증상 입력 (누르고 말하기)</span>
         <div class="ptt-mode-toggle">
+          <button type="button" class="btn-toggle-rec" onclick="clearVoiceText()" style="background: #475569;">지우기</button>
           <button type="button" class="btn-toggle-rec" id="btnToggleRec" onclick="toggleRecording()">원클릭 녹음</button>
         </div>
       </div>
@@ -748,28 +749,37 @@
       recognition.lang = 'ko-KR';
       recognition.continuous = true;
       recognition.interimResults = true;
-
-      let finalTranscript = '';
+      recognition.maxAlternatives = 1;
 
       recognition.onstart = () => {
         isRecording = true;
         pttButton.classList.add('recording');
         btnToggleRec.classList.add('recording');
         btnToggleRec.textContent = '녹음 중지';
-        pttStatus.textContent = '🔴 듣고 있습니다... 말씀해 주세요!';
+        pttStatus.textContent = '🔴 듣고 있습니다... 증상을 말씀하세요!';
         pttStatus.classList.add('active');
       };
 
       recognition.onresult = (event) => {
-        let interimTranscript = '';
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript + ' ';
-          } else {
-            interimTranscript += event.results[i][0].transcript;
+        let completeFinal = '';
+        let completeInterim = '';
+
+        // 모바일 브라우저의 중복 누적 버그를 방지하기 위해 results 전체를 매번 재구성
+        for (let i = 0; i < event.results.length; ++i) {
+          const item = event.results[i];
+          if (item[0] && item[0].transcript) {
+            if (item.isFinal) {
+              completeFinal += item[0].transcript + ' ';
+            } else {
+              completeInterim += item[0].transcript;
+            }
           }
         }
-        voiceTextBox.value = (finalTranscript + interimTranscript).trim();
+
+        const fullText = (completeFinal + completeInterim).trim();
+        if (fullText) {
+          voiceTextBox.value = fullText;
+        }
       };
 
       recognition.onerror = (event) => {
@@ -794,7 +804,9 @@
       if (!recognition) return;
       if (isRecording) return;
       try {
-        stopTTS(); // 음성 안내 중이면 멈춤
+        stopTTS(); // 이전 음성 안내 중지
+        // 새 녹음 시작 시 기존 텍스트 초기화
+        voiceTextBox.value = '';
         recognition.start();
       } catch (err) {
         console.error('Recognition start error:', err);
@@ -818,6 +830,11 @@
       btnToggleRec.textContent = '원클릭 녹음';
       pttStatus.textContent = '버튼을 길게 누른 상태로 증상을 말씀하세요';
       pttStatus.classList.remove('active');
+    }
+
+    function clearVoiceText() {
+      voiceTextBox.value = '';
+      showToast('텍스트가 초기화되었습니다.');
     }
 
     // Toggle button for desktop or accessibility
